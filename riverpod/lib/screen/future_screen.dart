@@ -16,12 +16,23 @@ class FutureScreen extends ConsumerWidget {
           //here use consumer because if consumer not use every time daya change hole vild method will call and rebuild
           Consumer(
             builder: (context, ref, child) {
-              final asyncValue = ref.watch(streamProvider);
-              return asyncValue.when(
-                skipLoadingOnReload: false,
-                data: (price) => Text(
-                  price.toStringAsFixed(2).toString(),
-                  style: TextStyle(fontSize: 24),
+              final postList = ref.watch(futureProvider);
+              return postList.when(
+              
+                data: (data) =>Expanded(
+                  child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final item = data[index];
+                      return ListTile(
+                        leading: CircleAvatar(
+                          child: Text(item.id.toString()),
+                        ),
+                        title: Text(item.title),
+                        subtitle: Text(item.body),
+                      );
+                    },
+                  ),
                 ),
                 loading: () => const CircularProgressIndicator(),
                 error: (error, stack) => Text('Error: $error'),
