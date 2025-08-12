@@ -7,18 +7,35 @@ class FutureScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncValue = ref.watch(futureProvider);
-   return Scaffold(
-    body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(child: asyncValue.when(
-          data: (data) => Text('Data: $data'),
-          loading: () => const CircularProgressIndicator(),
-          error: (error, stack) => Text('Error: $error'),
-        ),)
-      ],
-    ),
-   );
+   
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          //here use consumer because if consumer not use every time daya change hole vild method will call and rebuild
+          Consumer(
+            builder: (context, ref, child) {
+              final asyncValue = ref.watch(streamProvider);
+              return asyncValue.when(
+                skipLoadingOnReload: false,
+                data: (price) => Text(
+                  price.toStringAsFixed(2).toString(),
+                  style: TextStyle(fontSize: 24),
+                ),
+                loading: () => const CircularProgressIndicator(),
+                error: (error, stack) => Text('Error: $error'),
+              );
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // ref.invalidate(futureProvider); // Refresh the provider to fetch new data
+        },
+        child: const Icon(Icons.refresh),
+      ),
+    );
   }
 }
