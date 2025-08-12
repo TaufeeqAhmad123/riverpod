@@ -1,6 +1,6 @@
 class ItemModel {
   final String id;
-  final String name;
+   String name;
 
 
   ItemModel({
